@@ -1,0 +1,11 @@
+.wrapper {
+  height: 100vh;
+  background: linear-gradient(
+    rgba(255, 166, 0, 0.446) 25%,
+    rgb(50, 50, 132) 50%,
+    green 75%,
+    rgba(0, 0, 255, 0.05) 100%
+  );
+  margin: auto;
+  margin-top: none;
+}
