@@ -1,34 +1,54 @@
 // import logo from "./logo.svg";
+
 import "./App.css";
-import { NotTodoList } from "./components/NotTodoList";
-import { TodoInput } from "./components/TodoInput";
-import { TodoList } from "./components/TodoList";
+import { List } from "./components/List";
+import { Form } from "./components/Form";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 function App() {
+  const [tasks, setTasks] = useState([]);
+  const taskEntry = (taskObj) => {
+    taskObj.__id = uuidv4();
+    console.log(taskObj);
+    setTasks([...tasks, taskObj]);
+  };
+
+  const handleOnDelete = (_id) => {
+    if (!window.confirm("delete?")) {
+      return;
+    }
+
+    const filteredArg = tasks.filter((item) => item._id !== _id);
+    setTasks(filteredArg);
+  };
+
+  const switc = (_id, type) => {
+    alert(_id);
+
+    const updatedArg = tasks.map((item, index) => {
+      if (_id === item._id) {
+        item.type = type;
+      }
+      return item;
+    });
+    setTasks(updatedArg);
+  };
+
   return (
-    <div class="wrapper">
-      <div class="container">
+    <div className="wrapper">
+      <div className="container">
         {/* <!-- top title -->  */}
-        <div class="row">
-          <div class="col text-center mt-5">
+        <div className="row">
+          <div className="col text-center mt-5">
             <h1>Not to do list</h1>
             <hr />
           </div>
         </div>
-
         {/* <!-- form area -->  */}
-
-        <TodoInput />
-
+        <Form taskEntry={taskEntry} />
         {/* <!-- list area --> */}
-        <div class="row mt-5">
-          {/* <!-- Todo tasklist |left col --> */}
-          <TodoList />
-
-          {/* <!-- not to do || right col --> */}
-
-          <NotTodoList />
-        </div>
+        <List tasks={tasks} handleOnDelete={handleOnDelete} switc={switc} />
       </div>
     </div>
   );

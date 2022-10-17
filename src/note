@@ -1,0 +1,8 @@
+1. on delete click , get the indx value and pass it to the parent, app compomemt
+2. remove one item based on the indexed value
+3/ update state with the filtedred array
+4. update state with the filtedred array
+updatinf state causes the component rander that causes all the children compomemt to render as well.
+
+proedure
+function in parent and invoked in the children
