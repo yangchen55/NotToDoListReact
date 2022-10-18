@@ -1,22 +1,25 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { randomStr } from "../utils/test";
 
 export const Form = ({ taskEntry }) => {
   const [data, setData] = useState({});
+
   const handleOnchange = (e) => {
     const { value, name } = e.target;
     console.log(name, value);
 
     setData({
       ...data,
-      [name]: value,
+      [name]: name === "hr" ? +value : value,
       type: "entry",
     });
   };
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    // console.log(e);
+
     console.log(data);
-    taskEntry(data);
+    taskEntry({ ...data, _id: randomStr() });
   };
 
   return (
@@ -30,7 +33,6 @@ export const Form = ({ taskEntry }) => {
                 type="text"
                 className="form-control"
                 placeholder="enter task title"
-                s
                 required
                 onChange={handleOnchange}
               />
