@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { randomStr } from "../utils/test";
+
+
 
 export const Form = ({ taskEntry }) => {
   const [data, setData] = useState({});
@@ -18,8 +18,8 @@ export const Form = ({ taskEntry }) => {
   const handleOnSubmit = (e) => {
     e.preventDefault();
 
-    console.log(data);
-    taskEntry({ ...data, _id: randomStr() });
+    taskEntry(data);
+ 
   };
 
   return (

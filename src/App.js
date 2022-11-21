@@ -3,30 +3,59 @@
 import "./App.css";
 import { List } from "./components/List";
 import { Form } from "./components/Form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { addTasks, fetchTasks } from "./helpers/axioshelper";
+
 
 const ttlhrperWek = 24 * 7;
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]); //replace by server db
+  const [response, setResponse] = useState({})
   const [idsToDelete, setIdsToDelete] = useState([]);
   const [idsToMove, setIdsToMove] = useState([]);
 
   const totalHrs = tasks.reduce((acc, item) => acc + item.hr, 0);
-  const taskEntry = (taskObj) => {
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+ 
+
+  const getData = async () => {
+    const res =  await fetchTasks();
+    console.log(res);
+    setTasks(res.data.data);
+
+  };
+
+
+  const taskEntry = async(taskObj) => {
     if (totalHrs + taskObj.hr > ttlhrperWek) {
-      return alert("time limit exceeded");
+      // setResponse({
+      //   status: "error",
+      //   message: error.message,
+      // })
     }
-    // console.log(taskObj);
-    setTasks([...tasks, taskObj]);
+    console.log(taskObj);
+    const {data} =  await addTasks(taskObj);
+    console.log(data);
+    if(data.success === 'success'){
+      getData();
+      
+    }
+    setResponse(data);
+    // setTasks([...tasks, taskObj]);//
+    // instead of adding to the array, add to the server
   };
 
   const handleOnDelete = (_id) => {
     if (!window.confirm("delete?")) {
       return;
     }
-    const filteredArg = tasks.filter((item) => item._id !== _id);
-    setTasks(filteredArg);
+    const filteredArg = addTasks.filter((item) => item._id !== _id);
+    addTasks(filteredArg);
   };
 
   const handleOnSeletedDelete = () => {
@@ -38,10 +67,10 @@ function App() {
     setIdsToDelete([]);
     console.log(idsToDelete);
   };
-  const handleOnSeletedMove = () => {
-    alert(_id);
+  const handleOnSeletedMove = (_id, type) => {
+   
 
-    const updatedArg = tasks.map((item, index) => {
+    const updatedArg = tasks.map((item) => {
       if (_id === item._id) {
         item.type = type;
       }
@@ -76,13 +105,18 @@ function App() {
   return (
     <div className="wrapper">
       <div className="container">
-        {/* <!-- top title -->  */}
         <div className="row">
           <div className="col text-center mt-5">
             <h1>Not to do list</h1>
             <hr />
           </div>
         </div>
+
+{/* alert */}
+{
+  response.message && (   <div className={response.status === 'success'?"alert alert-success":"alert alert-danger"}>{response.message}</div>)
+}
+     
         {/* <!-- form area -->  */}
         <Form taskEntry={taskEntry} />
 
