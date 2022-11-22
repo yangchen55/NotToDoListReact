@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
+const initialData = {
+  task:"",
+  hr:"",
 
+};
 
 export const Form = ({ taskEntry }) => {
   const [data, setData] = useState({});
@@ -19,6 +23,7 @@ export const Form = ({ taskEntry }) => {
     e.preventDefault();
 
     taskEntry(data);
+    setData(initialData)
  
   };
 
@@ -30,6 +35,7 @@ export const Form = ({ taskEntry }) => {
             <div className="col-md-6">
               <input
                 name="task"
+                value={data.task}
                 type="text"
                 className="form-control"
                 placeholder="enter task title"
@@ -40,6 +46,7 @@ export const Form = ({ taskEntry }) => {
             <div className="col-md-3">
               <input
                 name="hr"
+                value={data.hr}
                 type="number"
                 className="form-control"
                 placeholder="enter hours"

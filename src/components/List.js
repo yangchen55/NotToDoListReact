@@ -2,7 +2,10 @@ import React from "react";
 import { NotTodoList } from "./NotTodoList";
 import { TodoList } from "./TodoList";
 
-export const List = ({ tasks, handleOnDelete, switc, handleOnCheck }) => {
+export const List = ({ tasks,
+  
+  handleOnSeleteAll,
+   switc,idsToDelete, handleOnCheck }) => {
   const entryList = tasks.filter((item) => item.type === "entry");
   const badList = tasks.filter((item) => item.type === "bad");
 
@@ -11,13 +14,17 @@ export const List = ({ tasks, handleOnDelete, switc, handleOnCheck }) => {
     <div className="row mt-5">
       <TodoList
         entryList={entryList}
-        handleOnDelete={handleOnDelete}
+        idsToDelete={idsToDelete}
+        handleOnSeleteAll = {handleOnSeleteAll}
+      
         switc={switc}
         handleOnCheck={handleOnCheck}
       />
       <NotTodoList
         badList={badList}
-        handleOnDelete={handleOnDelete}
+        idsToDelete={idsToDelete}
+        handleOnSeleteAll = {handleOnSeleteAll}
+      
         switc={switc}
         handleOnCheck={handleOnCheck}
       />

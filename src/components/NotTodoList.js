@@ -3,7 +3,9 @@ import React from "react";
 export const NotTodoList = ({
   badList,
   handleOnDelete,
+  idsToDelete,
   switc,
+  handleOnSeleteAll,
   handleOnCheck,
 }) => {
   const ttlHr = badList.reduce((acc, item) => acc + item.hr, 0);
@@ -11,6 +13,19 @@ export const NotTodoList = ({
     <div className="col-md-6 ">
       <h2 className="text-center">bad list</h2>
       <hr />
+      {badList.length > 1 && (
+      <div>
+      <input
+                  type="checkbox"
+                  className="form-check-input"
+                  value = "bad"
+                  // onChange={handleOnCheck}
+              onChange={handleOnSeleteAll}
+                />{""} all select
+      </div>
+      )}
+     
+      
       <table className="table table-striped">
         <tbody id="bad-list">
           {badList.map((item, i) => (
@@ -22,9 +37,10 @@ export const NotTodoList = ({
                   className="form-check-input"
                   value={item._id}
                   onChange={handleOnCheck}
+                  checked ={idsToDelete.includes(item._id)}
                 ></input>
               </td>
-
+              
               <td>{item.task}</td>
               <td>{item.hr}hr</td>
               <td>
@@ -34,12 +50,7 @@ export const NotTodoList = ({
                 >
                   <i class="fa-solid fa-arrow-left-long"></i>l
                 </button>{" "}
-                <button
-                  onClick={() => handleOnDelete(item._id)}
-                  class="btn btn-danger"
-                >
-                  <i class="fa-solid fa-trash"></i>
-                </button>
+               
               </td>
             </tr>
           ))}

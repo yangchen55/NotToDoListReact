@@ -5,7 +5,8 @@ import { List } from "./components/List";
 import { Form } from "./components/Form";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { addTasks, fetchTasks } from "./helpers/axioshelper";
+import { addTasks, fetchTasks, deleteTasks, updateTask } from "./helpers/axioshelper";
+
 
 
 const ttlhrperWek = 24 * 7;
@@ -14,6 +15,9 @@ function App() {
   const [response, setResponse] = useState({})
   const [idsToDelete, setIdsToDelete] = useState([]);
   const [idsToMove, setIdsToMove] = useState([]);
+  const [allEntrySelected, setAllEntrySelected ]= useState('entry');
+  const [allBadSelected, setAllBadSelected ]= useState('bad');
+
 
   const totalHrs = tasks.reduce((acc, item) => acc + item.hr, 0);
 
@@ -33,20 +37,20 @@ function App() {
 
   const taskEntry = async(taskObj) => {
     if (totalHrs + taskObj.hr > ttlhrperWek) {
-      // setResponse({
-      //   status: "error",
-      //   message: error.message,
-      // })
+      setResponse({
+        status: "error",
+        message: "Not enought hours to fit",
+      })
     }
     console.log(taskObj);
     const {data} =  await addTasks(taskObj);
     console.log(data);
-    if(data.success === 'success'){
+    if(data.status === 'success'){
       getData();
       
     }
     setResponse(data);
-    // setTasks([...tasks, taskObj]);//
+    
     // instead of adding to the array, add to the server
   };
 
@@ -58,18 +62,46 @@ function App() {
     addTasks(filteredArg);
   };
 
-  const handleOnSeletedDelete = () => {
+  const handleOnSeleteAll = (e) => {
+    const {checked, value} = e.target;
+    checked && value == "entry" && setAllEntrySelected(true);
+    checked && value == "bad" && setAllBadSelected(true);
+
+   console.log(e);
+   if(checked){
+    // select all
+    const argToGetIds = tasks.filter((item)  => {
+      return item.type === value;
+    });
+    const ids = argToGetIds.map((item  =>item._id ))
+    setIdsToDelete(ids);
+
+
+}else{
+  setIdsToDelete([])
+
+}
+
+  }
+
+  const handleOnSeletedDelete =  async() => {
     if (!window.confirm("delete?")) {
       return;
     }
-    const filteredArg = tasks.filter((item) => !idsToDelete.includes(item._id));
-    setTasks(filteredArg);
-    setIdsToDelete([]);
-    console.log(idsToDelete);
-  };
-  const handleOnSeletedMove = (_id, type) => {
-   
+    // const filteredArg = tasks.filter((item) => !idsToDelete.includes(item._id));
+    // setTasks(filteredArg);
+    // setIdsToDelete([]);
+    // console.log(idsToDelete);
+// call axios helper
+const  {data} = await deleteTasks(idsToDelete);
 
+setResponse(data);
+data.status === 'success' && getData();
+setIdsToDelete([]);
+
+  };
+  
+  const handleOnSeletedMove = (_id, type) => {  
     const updatedArg = tasks.map((item) => {
       if (_id === item._id) {
         item.type = type;
@@ -79,16 +111,13 @@ function App() {
     setTasks(updatedArg);
   };
 
-  const switc = (_id, type) => {
-    alert(_id);
+  const switc = async(_id, type) => {
 
-    const updatedArg = tasks.map((item, index) => {
-      if (_id === item._id) {
-        item.type = type;
-      }
-      return item;
-    });
-    setTasks(updatedArg);
+    // call axios to call put method eiht data 
+    const {data}  = await updateTask({type, _id})
+    console.log(data.type);
+    setResponse(data)
+    data.status === 'success' && getData();
   };
 
   const handleOnCheck = (e) => {
@@ -123,7 +152,9 @@ function App() {
         {/* <!-- list area --> */}
         <List
           tasks={tasks}
-          handleOnDelete={handleOnDelete}
+          idsToDelete={idsToDelete}
+          handleOnSeleteAll = {handleOnSeleteAll}
+          // handleOnDelete={handleOnDelete}
           switc={switc}
           handleOnCheck={handleOnCheck}
         />

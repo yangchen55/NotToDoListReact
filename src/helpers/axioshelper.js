@@ -4,8 +4,7 @@ export const fetchTasks = () => {
     
 
     try{
-       return axios.get(rootUrl);
-        
+       return axios.get(rootUrl);     
     }catch(error){
         console.log(error);
         return{
@@ -16,8 +15,6 @@ export const fetchTasks = () => {
 };
 
 export const addTasks = (taskObj) => {
-    
-
     try{
        return axios.post(rootUrl, taskObj);
         
@@ -29,3 +26,29 @@ export const addTasks = (taskObj) => {
         }
     }
 };
+
+export const deleteTasks = (_idsArg) => {
+    try{
+       return axios.delete(rootUrl, {data:_idsArg})
+    }catch (error){
+        return{
+        status:'error',
+        message: "error.message"
+        };
+    }
+}
+
+export const updateTask = (obj)  => {
+    try {
+        return axios.put(rootUrl, obj)
+        
+    } catch (error) {
+        console.log(error);
+        return{
+            status:"error",
+            message: error.message
+        };
+        
+    }
+
+}
